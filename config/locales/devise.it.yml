@@ -38,4 +38,4 @@ it:
     mailer:
       confirmation_instructions: "Istruzioni sulla conferma"
       reset_password_instructions: "Istruzioni su come cambiare la password"
-      unlock_instructions: "Istruzione su come sbloccare l'account"
+      unlock_instructions: "Istruzioni su come sbloccare l'account"
