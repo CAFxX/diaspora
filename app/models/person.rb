@@ -2,8 +2,7 @@
 #   licensed under the Affero General Public License version 3.  See
 #   the COPYRIGHT file.
 
-
-require 'lib/hcard'
+require File.expand_path('../../../lib/hcard', __FILE__)
 
 class Person
   include MongoMapper::Document

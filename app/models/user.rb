@@ -2,11 +2,10 @@
 #   licensed under the Affero General Public License version 3.  See
 #   the COPYRIGHT file.
 
-
-require 'lib/diaspora/user/friending.rb'
-require 'lib/diaspora/user/querying.rb'
-require 'lib/diaspora/user/receiving.rb'
-require 'lib/salmon/salmon'
+require File.expand_path('../../../lib/diaspora/user/friending', __FILE__)
+require File.expand_path('../../../lib/diaspora/user/querying', __FILE__)
+require File.expand_path('../../../lib/diaspora/user/receiving', __FILE__)
+require File.expand_path('../../../lib/salmon/salmon', __FILE__)
 
 class User
   include MongoMapper::Document
@@ -72,7 +71,6 @@ class User
     end
   end
 
-
   def move_friend( opts = {})
     return true if opts[:to] == opts[:from]
     friend = Person.first(:_id => opts[:friend_id])
@@ -108,7 +106,6 @@ class User
     intitial_post(class_name, aspect_ids, options)
   end
 
-
   def intitial_post(class_name, aspect_ids, options = {}) 
     post = build_post(class_name, options)
     post.socket_to_uid(id, :aspect_ids => aspect_ids) if post.respond_to?(:socket_to_uid)
@@ -129,14 +126,18 @@ class User
   end
 
   def validate_aspect_permissions(aspect_ids)
-    aspect_ids = [aspect_ids.to_s] if aspect_ids.is_a? BSON::ObjectId
+    if aspect_ids == "all"
+      return aspect_ids
+    end
+
+    aspect_ids = [aspect_ids.to_s] unless aspect_ids.is_a? Array
 
     if aspect_ids.nil? || aspect_ids.empty?
       raise ArgumentError.new("You must post to someone.")
     end
 
     aspect_ids.each do |aspect_id|
-      unless aspect_id == "all" || self.aspects.find(aspect_id) 
+      unless self.aspects.find(aspect_id) 
         raise ArgumentError.new("Cannot post to an aspect you do not own.")
       end 
     end
@@ -258,7 +259,6 @@ class User
     aspect(:name => "Family")
     aspect(:name => "Work")
   end
-  
 
   def diaspora_handle
     "#{self.username}@#{APP_CONFIG[:terse_pod_url]}"
@@ -267,7 +267,6 @@ class User
   def downcase_username
     username.downcase! if username
   end
-
 
   def as_json(opts={})
     {
